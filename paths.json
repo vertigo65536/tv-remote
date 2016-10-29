@@ -1,0 +1,10 @@
+{
+    "simpsons": {
+        "name": "The Simpsons",
+        "path": "/home/david/Videos/The Simpsons/Playlist/*/*.avi"
+    },
+    "ds9": {
+        "name": "Star Trek Deep Space 9",
+        "path": "/home/david/Videos/Star Trek/3 Deep Space 9/*/*.mp4"
+    }
+}
