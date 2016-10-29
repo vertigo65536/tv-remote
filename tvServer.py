@@ -77,7 +77,6 @@ def connection():
         conn.close()
 
 def getArray(path, shuffled):
-    print "!!!!!!" + path + "!!!!!!!!"
     path = path.replace('"', "")
     allFiles = filter(None, check_output("ls " + path.replace("'", "'\\''").replace(" ", "\ ") , shell=True, universal_newlines=True).split("\n"))
     if shuffled == True:
@@ -114,12 +113,14 @@ def player(path):
         playlist = getArray(path[0], True)
         del(path[0])
         f = open(fileQueue, "w")
-        f.write(",".join(path))
+        output = ",".join(path)
+        checksum = hash(output)
+        f.write(output)
         f.close()
         for i in range(len(playlist)):
-            ffmpeg(playlist[i])
+            ffmpeg(playlist[i+1])
             path = getNextShows()
-            newChecksum = hash(path) 
+            newChecksum = hasih(path) 
             if not run_event.is_set() or (newChecksum != checksum):
                 break
 
