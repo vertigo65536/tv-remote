@@ -4,7 +4,31 @@
         "path": "/home/david/Videos/The Simpsons/Playlist/*/*.avi"
     },
     "ds9": {
-        "name": "Star Trek Deep Space 9",
+        "name": "Star Trek: Deep Space 9",
         "path": "/home/david/Videos/Star Trek/3 Deep Space 9/*/*.mp4"
+    },
+    "airplane": {
+        "name": "Airplane",
+        "path": "/home/david/Videos/Airplane.avi"
+    },
+    "airplane2": {
+        "name": "Airplane 2",
+        "path": "/home/david/Videos/Airplane II The Sequel DVD.avi"
+    },
+    "sunny": {
+        "name": "It's Always Sunny in Philadelphia",
+        "path": "/home/david/Videos/It's Always Sunny in Philadelphia/*/*.avi"
+    },
+    "spaceghost": {
+        "name": "Space Ghost: Coast to Coast",
+        "path": "/home/david/Videos/Space Ghost Coast To Coast/*/*.m4v"
+    },
+    "southpark": {
+        "name": "South Park",
+        "path": "/home/david/Videos/South Park/*/*.mkv"
+    },
+    "tng": {
+        "name": "Star Trek: The Next Generation",
+        "path": "/home/david/Videos/Star Trek/2 The Next Generation/*/*.avi"
     }
 }

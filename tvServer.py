@@ -6,10 +6,12 @@ import json
 import os
 import threading
 import time
+import glob
 
 
 def getPath(name):
-    f = open('paths.json', 'r')
+    print "getPath"
+    f = open('/home/david/Documents/tvSocket/paths.json', 'r')
     key = json.loads(f.read())
     try:
         key[name]
@@ -20,13 +22,14 @@ def getPath(name):
 
 
 def queueShow(path):
-    fileQueue = "filequeue.csv"
+    print "queueShow"
+    global fileQueue
     #open(fileQueue, "w+").close()
     try:
         f = open(fileQueue, "r")
     except:
         return False 
-    if (len(f.read().split(",")) > 5):
+    if (len(f.read().rstrip(',').split(",")) > 5):
         return False 
     f = open(fileQueue, "a")
     f.write(path + ",")
@@ -35,6 +38,7 @@ def queueShow(path):
 
 def parseData(data):
     json_data = json.loads(data)
+    print "parseData"
     try:
         json_data['command']
     except NameError:
@@ -68,24 +72,18 @@ def connection():
         conn, addr = s.accept()
         print 'Connection address:', addr
         while run_event.is_set():
-            data = conn.recv(BUFFER_SIZE)
-            if not data: break
-            print "received data:", data
-            response = parseData(data)
-            conn.send(str(response)) 
-
+            try:
+                data = conn.recv(BUFFER_SIZE)
+                if not data: break
+                print "received data:", data
+                response = parseData(data)
+                conn.send(str(response)) 
+            except:
+                conn.close()
         conn.close()
 
-def getArray(path, shuffled):
-    path = path.replace('"', "")
-    allFiles = filter(None, check_output("ls " + path.replace("'", "'\\''").replace(" ", "\ ") , shell=True, universal_newlines=True).split("\n"))
-    if shuffled == True:
-        for i in range(30):
-            shuffle(allFiles)
-    
-    return allFiles;
-
 def ffmpeg(file):
+    print file
     print "ffmpeg -re -i " + "'" + file.replace("'", "'\\''") + "'" + " -acodec libfaac -vcodec libx264 -f flv rtmp://djwt.xyz:420/live/mp4:test.mp4"
     fileType = file.split(".")
     fileType = fileType[len(fileType) - 1]
@@ -97,36 +95,40 @@ def ffmpeg(file):
 
 
 def player(path):
-    fileQueue = 'filequeue.csv'
+    global fileQueue
+    global run_event
     try:
+        print path
         f = open(fileQueue, "w")
+        print "test"
         f.write(path + ",")
         f.close()
     except:
+        print "could not open file"
+        run_event.clear()
         return False;
-    global run_event
     while run_event.is_set():
         path = getNextShows()
         checksum = hash(path)
-        path = path.split(",")
-        print path
-        playlist = getArray(path[0], True)
+        path = path.rstrip(',').split(",")
+        playlist = glob.glob(path[0])
+        shuffle(playlist)
         del(path[0])
-        f = open(fileQueue, "w")
+        f = open(fileQueue, "w+")
         output = ",".join(path)
         checksum = hash(output)
         f.write(output)
         f.close()
-        for i in range(len(playlist)):
+        for i in range(len(playlist) - 1):
             ffmpeg(playlist[i+1])
             path = getNextShows()
-            newChecksum = hasih(path) 
+            newChecksum = hash(path) 
             if not run_event.is_set() or (newChecksum != checksum):
                 break
 
 
 def getNextShows():
-    fileQueue = "filequeue.csv"
+    global fileQueue
     try:
         f = open(fileQueue, "r")
     except:
@@ -137,13 +139,13 @@ def getNextShows():
     return path    
 
 
-def main():
+def main(path):
     global run_event
     run_event = threading.Event()
     run_event.set()
 
     threads = []
-    t1 = threading.Thread(target=player, args=("/home/david/Videos/The Simpsons/Playlist/*/*.avi",))
+    t1 = threading.Thread(target=player, args=(path,))
     threads.append(t1)
     t1.start()
     t2 = threading.Thread(target=connection)
@@ -160,4 +162,6 @@ def main():
         t2.join()
         print "threads successfully closed"
 
-main()
+
+global fileQueue = "/var/filequeue.csv"
+main(sys.argv[1])
