@@ -62,6 +62,10 @@ def parseData(data):
             f = open('paths.json', 'r')
             key = json.loads(f.read())
             return key 
+        if json_data['command'] == 'currentEpisode':
+            global currentEpisode
+            return currentEpisode
+
 
 #Main connection thread. Calls the parseData function on success
  
@@ -110,6 +114,8 @@ def ffmpeg(file):
 def player(path):
     global fileQueue
     global run_event
+    global currentEpisode
+
 
     try:
         f = open(fileQueue, "w")
@@ -135,8 +141,10 @@ def player(path):
         checksum = hash(output)
         f.write(output)
         f.close()
-        for i in range(len(playlist) - 1):
-            ffmpeg(playlist[i+1])
+        for i in range(1, len(playlist) - 1):
+            currentEpisode = os.path.dirname(playlist[i]).split("/") 
+            currentEpisode = currentEpisode[len(currentEpisode) - 1] + " - " + os.path.splitext(os.path.basename(playlist[i]))[0]
+            ffmpeg(playlist[i])
             path = getNextShows()
             newChecksum = hash(path) 
             if not run_event.is_set() or (newChecksum != checksum) or (enqueued == True):
@@ -163,6 +171,10 @@ def main(path):
     global run_event
     run_event = threading.Event()
     run_event.set()
+    global fileQueue
+    fileQueue = "/var/filequeue.csv"
+    global currentEpisode
+    currentEpisode = "UNSET"
 
     threads = []
     t1 = threading.Thread(target=player, args=(path,))
@@ -183,6 +195,4 @@ def main(path):
         print "threads successfully closed"
 
 
-global fileQueue
-fileQueue = "/var/filequeue.csv"
 main(sys.argv[1])
