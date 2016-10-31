@@ -9,6 +9,8 @@ import time
 import glob
 
 
+#Retrieves a show path from a keyword
+
 def getPath(name):
     print "getPath"
     f = open('/home/david/Documents/tvSocket/paths.json', 'r')
@@ -20,6 +22,7 @@ def getPath(name):
     else:
         return key[name]
 
+#Recieves a path, and adds it to the show queue
 
 def queueShow(path):
     print "queueShow"
@@ -35,6 +38,8 @@ def queueShow(path):
     f.write(path + ",")
     return True 
 
+
+#Invokes the approriate function upon recieving a valid json
 
 def parseData(data):
     json_data = json.loads(data)
@@ -58,16 +63,15 @@ def parseData(data):
             key = json.loads(f.read())
             return key 
 
+#Main connection thread. Calls the parseData function on success
  
 def connection():
-    TCP_IP = '192.168.0.102'
     TCP_PORT = 5005
     BUFFER_SIZE = 1024  # Normally 1024, but we want fast response
     global run_event
-   
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.bind((TCP_IP, TCP_PORT))
-    s.listen(1)
+    s = socket.socket()
+    s.bind(("", TCP_PORT))
+    s.listen(5)
     while run_event.is_set():
         conn, addr = s.accept()
         print 'Connection address:', addr
@@ -79,28 +83,36 @@ def connection():
                 response = parseData(data)
                 conn.send(str(response)) 
             except:
-                conn.close()
+                break;
         conn.close()
 
+
+#Calls the approriate ffmpeg command for a given file
+
 def ffmpeg(file):
-    print file
-    print "ffmpeg -re -i " + "'" + file.replace("'", "'\\''") + "'" + " -acodec libfaac -vcodec libx264 -f flv rtmp://djwt.xyz:420/live/mp4:test.mp4"
     fileType = file.split(".")
     fileType = fileType[len(fileType) - 1]
-    if fileType == "mp4" or fileType == "m4v":
-        call("ffmpeg -re -i " + "'" + file.replace("'", "'\\''") + "'" + " -c copy -f flv rtmp://djwt.xyz:420/live/mp4:test.mp4", shell=True)
-    if fileType == "avi":
-        call("ffmpeg -re -i " + "'" + file.replace("'", "'\\''") + "'" + " -acodec libfaac -vcodec libx264 -f flv rtmp://djwt.xyz:420/live/mp4:test.mp4", shell=True)
+    f = open('/home/david/Documents/tvSocket/filetypes.json', 'r')
+#    print f.read()
+    key = json.loads(f.read())
+    try:
+        print key
+        key[fileType]
+    except:
+        print "Invalid file type"
+    else:
+        command = key[fileType] % ("'" + file.replace("'", "'\\''") + "'")
+        call(command, shell=True)
 
 
+#Intitiate the stream, and check for queued show changes
 
 def player(path):
     global fileQueue
     global run_event
+
     try:
-        print path
         f = open(fileQueue, "w")
-        print "test"
         f.write(path + ",")
         f.close()
     except:
@@ -111,9 +123,13 @@ def player(path):
         path = getNextShows()
         checksum = hash(path)
         path = path.rstrip(',').split(",")
+        print path[0]
         playlist = glob.glob(path[0])
         shuffle(playlist)
         del(path[0])
+        enqueued = False
+        if len(path) > 0:
+            enqueued = True
         f = open(fileQueue, "w+")
         output = ",".join(path)
         checksum = hash(output)
@@ -123,9 +139,11 @@ def player(path):
             ffmpeg(playlist[i+1])
             path = getNextShows()
             newChecksum = hash(path) 
-            if not run_event.is_set() or (newChecksum != checksum):
+            if not run_event.is_set() or (newChecksum != checksum) or (enqueued == True):
                 break
 
+
+#Returns an array of containing the queued shows
 
 def getNextShows():
     global fileQueue
@@ -138,6 +156,8 @@ def getNextShows():
     f.close()
     return path    
 
+
+#Initiate threads, then wait for program termination.
 
 def main(path):
     global run_event
@@ -163,5 +183,6 @@ def main(path):
         print "threads successfully closed"
 
 
-global fileQueue = "/var/filequeue.csv"
+global fileQueue
+fileQueue = "/var/filequeue.csv"
 main(sys.argv[1])
