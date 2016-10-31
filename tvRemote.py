@@ -1,4 +1,5 @@
 import socket
+import sys
 import json
 
 TCP_IP = '192.168.0.102'
@@ -6,9 +7,18 @@ TCP_PORT = 5005
 BUFFER_SIZE = 1024
 MESSAGE = "test data"
 
-#data = {'command' : 'idList'}  #idList will return a json matching the key to the show name
-#data = {'command' : 'nextShow', 'tvShow' : 'simpsons'} #Sets the next show to watch
-data = {'command' : 'skip'} #Skips the current episode, and initiates next show if set
+if sys.argv[1] == "help":
+    print("skip: skips the current episode")
+    print("nextShow <id>: queues the next show")
+    print("idList: returns a list of program IDs")
+    print("currentEpisode: returns the current episode")
+    exit()
+
+try:
+    path = sys.argv[2]
+except:
+    path = ""
+data = {'command' : sys.argv[1], 'tvShow': path} 
 
 
 MESSAGE = json.dumps(data, ensure_ascii=False)
