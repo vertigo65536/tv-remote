@@ -1,6 +1,7 @@
 import socket
 import sys
 import json
+import getpass
 
 TCP_IP = '192.168.0.102'
 TCP_PORT = 5005
@@ -18,7 +19,7 @@ try:
     path = sys.argv[2]
 except:
     path = ""
-data = {'command' : sys.argv[1], 'tvShow': path} 
+data = {'command' : sys.argv[1], 'tvShow': path}
 
 
 MESSAGE = json.dumps(data, ensure_ascii=False)
@@ -28,6 +29,10 @@ s.connect((TCP_IP, TCP_PORT))
 s.send(MESSAGE.encode())
 data = s.recv(BUFFER_SIZE)
 
+if data == '%auth':
+    password = getpass.getpass('A password is required: ')
+    s.send(password.encode())
+    data = s.recv(BUFFER_SIZE)
 print(str(data))
 
 s.close()

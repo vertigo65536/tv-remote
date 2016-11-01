@@ -7,12 +7,11 @@ import os
 import threading
 import time
 import glob
-
+import hashlib
 
 #Retrieves a show path from a keyword
 
 def getPath(name):
-    print "getPath"
     f = open('/home/david/Documents/tvSocket/paths.json', 'r')
     key = json.loads(f.read())
     try:
@@ -25,7 +24,6 @@ def getPath(name):
 #Recieves a path, and adds it to the show queue
 
 def queueShow(path):
-    print "queueShow"
     global fileQueue
     #open(fileQueue, "w+").close()
     try:
@@ -39,11 +37,48 @@ def queueShow(path):
     return True 
 
 
+def requestVideo(name):
+    try:
+        requestsFile = "/home/david/Documents/tvSocket/requests.json"
+        f = open(requestsFile, 'a+')
+        contents = f.read()
+        if contents != "":
+            requests = json.loads(contents)
+        else:
+            requests = []
+        f.close()
+        requests.append(name)
+        f = open(requestsFile, "w+")
+        f.write(json.dumps(requests))
+        f.close()
+    except:
+        return False
+    else:
+        return True
+
+
+def hashPass(password, salt):
+    return hashlib.sha224(password + salt).hexdigest()
+
+
+def authenticate(conn):
+    BUFFER_SIZE = 1024
+    conn.send("%auth")
+    data = conn.recv(BUFFER_SIZE)
+    try:
+        f = open("/home/david/Documents/tvSocket/.users.json")
+        users = json.loads(f.read())
+        for i in range(len(users)):
+            if hashPass(users[i]['hash'], users[i]['salt']) == hashPass(hashPass(data, users[i]['salt']), users[i]['salt']):
+                return True
+        return False
+    except:
+        return False
+
 #Invokes the approriate function upon recieving a valid json
 
-def parseData(data):
+def parseData(data, conn):
     json_data = json.loads(data)
-    print "parseData"
     try:
         json_data['command']
     except NameError:
@@ -53,18 +88,33 @@ def parseData(data):
             print("skip!")
             print(call("killall ffmpeg", shell=True))
             return True
+
         if json_data['command'] == 'nextShow':
             path = getPath(json_data["tvShow"])
             if path != False:
                 print str(path["name"]) + " has been queued."
             return str(queueShow(path["path"]))
+
         if json_data['command'] == 'idList':
             f = open('paths.json', 'r')
             key = json.loads(f.read())
             return key 
+
         if json_data['command'] == 'currentEpisode':
             global currentEpisode
             return currentEpisode
+
+        if json_data['command'] == 'request':
+            return requestVideo(json_data['tvShow'])
+
+        if json_data['command'] == 'approve':
+            if authenticate(conn) == True:
+                f = open("/home/david/Documents/tvSocket/requests.json", "r")
+                return json.loads(f.read())
+            else:
+                return "Invalid password"
+    
+    return "invalid command"
 
 
 #Main connection thread. Calls the parseData function on success
@@ -84,7 +134,7 @@ def connection():
                 data = conn.recv(BUFFER_SIZE)
                 if not data: break
                 print "received data:", data
-                response = parseData(data)
+                response = parseData(data, conn)
                 conn.send(str(response)) 
             except:
                 break;
@@ -97,15 +147,17 @@ def ffmpeg(file):
     fileType = file.split(".")
     fileType = fileType[len(fileType) - 1]
     f = open('/home/david/Documents/tvSocket/filetypes.json', 'r')
-#    print f.read()
     key = json.loads(f.read())
     try:
         print key
+        print fileType
         key[fileType]
     except:
         print "Invalid file type"
+        return False
     else:
         command = key[fileType] % ("'" + file.replace("'", "'\\''") + "'")
+        print command
         call(command, shell=True)
 
 
@@ -115,7 +167,6 @@ def player(path):
     global fileQueue
     global run_event
     global currentEpisode
-
 
     try:
         f = open(fileQueue, "w")
@@ -188,7 +239,7 @@ def main(path):
         while True:
             time.sleep(1)
     except KeyboardInterrupt:
-        print "attempting to close threads. Max wait =",max(1,2)
+        print "attempting to close threads."
         run_event.clear()
         t1.join()
         t2.join()
