@@ -192,7 +192,7 @@ def player(path):
         checksum = hash(output)
         f.write(output)
         f.close()
-        for i in range(1, len(playlist) - 1):
+        for i in range(0, len(playlist)):
             currentEpisode = os.path.dirname(playlist[i]).split("/") 
             currentEpisode = currentEpisode[len(currentEpisode) - 1] + " - " + os.path.splitext(os.path.basename(playlist[i]))[0]
             ffmpeg(playlist[i])

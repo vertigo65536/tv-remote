@@ -30,5 +30,9 @@
     "tng": {
         "name": "Star Trek: The Next Generation",
         "path": "/home/david/Videos/Star Trek/2 The Next Generation/*/*.avi"
+    },
+    "peewee": {
+        "name": "Peewee's Big Adventure",
+        "path": "/home/david/Videos/peewee.mp4"
     }
 }
