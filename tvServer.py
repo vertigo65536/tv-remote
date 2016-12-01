@@ -184,7 +184,7 @@ def queueEpisode(episodeKey):
     print episodePath
     try:
         queueShow(episodePath)
-        queueShow(currentShow)
+        #queueShow(currentShow)
     except:
         return False
     else:
@@ -297,8 +297,11 @@ def player(path):
         path = getNextShows()
         checksum = hash(path)
         path = path.rstrip(',').split(",")
+        print path
+        if path[0] == "":
+            print "test"
+            path[0] = currentShow
         currentShow = path[0]
-        print path[0]
         playlist = glob.glob(path[0])
         if shuffleToggle == True:
             shuffle(playlist)
