@@ -34,5 +34,109 @@
     "peewee": {
         "name": "Peewee's Big Adventure",
         "path": "/home/david/Videos/peewee.mp4"
+    },
+    "tos": {
+        "name": "Star Trek: The Original Series",
+        "path": "/home/david/Videos/Star Trek/1 The Original Series/*/*.avi"
+    },
+    "voy": {
+        "name": "Star Trek: Voyager",
+        "path": "/home/david/Videos/Star Trek/4 Voyager/*/*.avi"
+    },
+    "kmkywap": {
+        "name": "Knowing Me Knowing You with Alan Partridge",
+        "path": "/home/david/Videos/kmkywap/*.mp4"
+    },
+    "samuraichamp": {
+        "name": "Samurai Champloo",
+        "path": "/home/david/Videos/Samurai Champloo/*/*.mkv"
+    },
+    "spongebob": {
+        "name": "Spongebob Squarepants",
+        "path": "/home/david/Videos/cartoonnetwork/Spongebob/*/*.avi"
+    },
+    "curb": {
+        "name": "Curb your Enthusiasm",
+        "path": "/home/david/Videos/Curb/*/*.avi"
+    },
+    "koth": {
+        "name": "King of the Hill",
+        "path": "/home/david/Videos/King of the Hill/*/*.mkv"
+    },
+    "imalan": {
+        "name": "I'm Alan Partridge",
+        "path": "/home/david/Videos/imalan/*/*.divx"
+    },
+    "reddwarf": {
+        "name": "Red Dwarf",
+        "path": "/home/david/Videos/Red Dwarf/*/*.avi"
+    },
+    "teamamerica": {
+        "name": "Team America",
+        "path": "/home/david/Videos/team-america.mkv"
+    },
+    "thegreatestchristmasmovieofalltime": {
+        "name": "Die Hard",
+        "path": "/home/david/Videos/diehard.mkv"
+    },
+    "gremlins": {
+        "name": "Gremlins",
+        "path": "/home/david/Videos/gremlins.mp4"
+    },
+    "gremlins2": {
+        "name": "Gremlins 2: The New Batch",
+        "path": "/home/david/Videos/gremlins2.mp4"
+    },
+    "galaxyquest": {
+        "name": "Galaxy Quest",
+        "path": "/home/david/Videos/galaxyquest.mp4"
+    },
+    "lethalweapon": {
+        "name": "Lethal Weapon",
+        "path": "/home/david/Videos/lethalweapon.mp4"
+    },
+    "dexterslab": {
+        "name": "Dexter's Laboratory",
+        "path": "/home/david/Videos/cartoonnetwork/dexterslab/*/*.avi"
+    },
+    "diehard2": {
+        "name": "Die Hard 2",
+        "path": "/home/david/Videos/diehard2.mp4"
+    },
+    "ipman": {
+        "name": "IP man",
+        "path": "/home/david/Videos/ipman.mp4"
+    },
+    "renstimpy": {
+        "name": "Ren and Stimpy",
+        "path": "/home/david/Videos/cartoonnetwork/Ren and Stimpy/*/*.mkv"
+    },
+    "billymandy": {
+        "name": "The Grim Adventures of Billy and Mandy",
+        "path": "/home/david/Videos/cartoonnetwork/billymandy/*/*.avi"
+    },
+    "cartoonnetwork": {
+        "name": "The Cartoon Network",
+        "path": "/home/david/Videos/cartoonnetwork/*/*/*.avi"
+    },
+    "wackyraces": {
+        "name": "Wacky Races",
+        "path": "/home/david/Videos/cartoonnetwork/wackyraces/*/*.avi"
+    },
+    "courage": {
+        "name": "Courage the Cowardly Dog",
+        "path": "/home/david/Videos/cartoonnetwork/couragethecowardlydog/*/*.avi"
+    },
+    "jackiechanadventures": {
+        "name": "Jackie Chan Adventures", 
+        "path": "/home/david/Videos/cartoonnetwork/Jackie Chan Adventures/*/*.mp4"
+     },
+     "johnnybravo": {
+        "name": "Johnny Bravo",
+        "path": "/home/david/Videos/cartoonnetwork/Johnny Bravo/*/*.avi"
+     },
+     "ppg": {
+        "name": "The Powerpuff Girls",
+        "path": "/home/david/Videos/cartoonnetwork/The Powerpuff Girls/*/*.avi"
     }
 }

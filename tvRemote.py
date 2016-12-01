@@ -3,7 +3,7 @@ import sys
 import json
 import getpass
 
-TCP_IP = '192.168.0.102'
+TCP_IP = 'localhost'
 TCP_PORT = 5005
 BUFFER_SIZE = 1024
 MESSAGE = "test data"
