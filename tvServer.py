@@ -166,7 +166,7 @@ def queueEpisode(episodeKey):
     global run_event
     global currentShow
     episodeKey = episodeKey.split(":")
-    if len(episodeKey) != 2:
+    if len(episodeKey) not in [2,3]:
         return "invalid syntax"
     for i in range(2):
     	try:
@@ -174,17 +174,24 @@ def queueEpisode(episodeKey):
         except:
             return "not numbers"
         episodeKey[i] = int(episodeKey[i]) - 1
-    currentShowSplit = currentShow.split("/")
+    try:
+        episodeKey[2]
+    except:
+        show = currentShow
+    else:
+        show = getPath(episodeKey[2])['path']
+        if show == False:
+            return show
+    showSplit = show.split("/")
     episodePath = ""
-    for i in range((len(currentShowSplit) - 2)):
-        if currentShowSplit[i] != "":
-            episodePath = episodePath + "/" + currentShowSplit[i]
+    for i in range((len(showSplit) - 2)):
+        if showSplit[i] != "":
+            episodePath = episodePath + "/" + showSplit[i]
     episodePath = nthFile(episodePath, "dir", episodeKey[0])
-    episodePath = nthFile(episodePath, currentShow.split(".")[len(currentShow.split(".")) - 1], episodeKey[1])
+    episodePath = nthFile(episodePath, show.split(".")[len(show.split(".")) - 1], episodeKey[1])
     print episodePath
     try:
         queueShow(episodePath)
-        #queueShow(currentShow)
     except:
         return False
     else:
@@ -297,12 +304,14 @@ def player(path):
         path = getNextShows()
         checksum = hash(path)
         path = path.rstrip(',').split(",")
-        print path
         if path[0] == "":
             print "test"
             path[0] = currentShow
         currentShow = path[0]
+        print path
+        print path[0]
         playlist = glob.glob(path[0])
+        print playlist
         if shuffleToggle == True:
             shuffle(playlist)
         del(path[0])
