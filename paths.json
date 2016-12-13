@@ -21,7 +21,7 @@
     },
     "spaceghost": {
         "name": "Space Ghost: Coast to Coast",
-        "path": "/home/david/Videos/Space Ghost Coast To Coast/*/*.m4v"
+        "path": "/home/david/Videos/cartoonnetwork/Space Ghost Coast To Coast/*/*.m4v"
     },
     "southpark": {
         "name": "South Park",
@@ -97,7 +97,8 @@
     },
     "dexterslab": {
         "name": "Dexter's Laboratory",
-        "path": "/home/david/Videos/cartoonnetwork/dexterslab/*/*.avi"
+        "path": "/home/david/Videos/cartoonnetwork/dexterslab/*/*.avi",
+        "params": "-b 130000"
     },
     "diehard2": {
         "name": "Die Hard 2",
@@ -109,7 +110,8 @@
     },
     "renstimpy": {
         "name": "Ren and Stimpy",
-        "path": "/home/david/Videos/cartoonnetwork/Ren and Stimpy/*/*.mkv"
+        "path": "/home/david/Videos/cartoonnetwork/Ren and Stimpy/*/*.mkv",
+        "params": "-ar 44100 -ab 64 -ac 1 -acodec mp3"
     },
     "billymandy": {
         "name": "The Grim Adventures of Billy and Mandy",
@@ -117,7 +119,7 @@
     },
     "cartoonnetwork": {
         "name": "The Cartoon Network",
-        "path": "/home/david/Videos/cartoonnetwork/*/*/*.avi"
+        "path": "/home/david/Videos/cartoonnetwork/*/*/*"
     },
     "wackyraces": {
         "name": "Wacky Races",
@@ -138,5 +140,85 @@
      "ppg": {
         "name": "The Powerpuff Girls",
         "path": "/home/david/Videos/cartoonnetwork/The Powerpuff Girls/*/*.avi"
+    },
+    "beyblade": {
+        "name": "Beyblade",
+        "path": "/home/david/Videos/cartoonnetwork/beyblade/*/*.mkv"
+    },
+    "avgn": {
+        "name": "The Angry Video Game Nerd",
+        "path": "/home/david/Videos/AVGN/*/*"
+    },
+    "onionmovie": {
+        "name": "The Onion Movie",
+        "path": "/home/david/Videos/onionmovie.avi"
+    },
+    "thedaytoday": {
+        "name": "The Day Today",
+        "path": "/home/david/Videos/The Day Today/*/*"
+    },
+    "purepwnage": {
+        "name": "Pure Pwnage",
+        "path": "/home/david/Videos/purepwnage/*/*.avi"
+    },
+    "wileecoyote": {
+        "name": "Wile E. Coyote and Roadrunner",
+        "path": "/home/david/Videos/cartoonnetwork/wileecoyote/*/*.avi"
+    },
+    "pokemon": {
+        "name": "Pokemon",
+        "path": "/home/david/Videos/cartoonnetwork/Pokemon/*/*.mp4"
+    },
+    "gits": {
+        "name": "Ghost in the Shell",
+        "path": "/home/david/Videos/GITS/*/*.mp4"
+    },
+    "biglebowski": {
+        "name": "The Big Lebowski",
+        "path": "/home/david/Videos/The Big Lebowski/*/*.mp4"
+    },
+    "nathanbarley": {
+        "name": "Nathan Barley",
+        "path": "/home/david/Videos/Nathan Barley/*/*.avi"
+    },
+    "spaced": {
+        "name": "Spaced",
+        "path": "/home/david/Videos/Spaced/*/*.avi"
+    },
+    "fatherted": {
+        "name": "Father Ted",
+        "path": "/home/david/Videos/Spaced/*/*.avi"
+    },
+    "policesquad": {
+        "name": "Police Squad", 
+        "path": "/home/david/Videos/Police Squad/*/*.avi"
+    },
+    "leagueofgents": {
+        "name": "The League of Gentlemen",
+        "path": "/home/david/Videos/The League Of Gentlemen/*/*.avi"
+    },
+    "deathnotedub": {
+        "name": "Death Note (Dubbed)",
+        "path": "/home/david/Videos/Death Note/Dubbed/*/*.avi"
+    },
+    "deathnotesub": {
+        "name": "Death Node (Subbed)",
+        "path": "/home/david/Videos/Death Note/Subbed/*/*.mkv"
+    },
+    "onepunchman": {
+        "name": "One Punch Man",
+        "path": "/home/david/Videos/One Punch Man/*/*.mkv"
+    },
+    "dragonball": {
+        "name": "Dragonball",
+        "path": "/home/david/Videos/dragonball/Dragonball/*.rmvb"
+    },
+    "dragonballz": {
+        "name": "Dragonball",
+        "path": "/home/david/Videos/dragonball/Dragonball Z/*.rmvb"
+    },
+    "dragonballgt": {
+        "name": "Dragonball",
+        "path": "/home/david/Videos/dragonball/Dragonball GT/*.rmvb"
     }
 }

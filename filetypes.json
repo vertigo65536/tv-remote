@@ -1,8 +1,9 @@
 {
-    "mp4": "ffmpeg -re -i %s -c copy -f flv rtmp://djwt.xyz:420/live/mp4:test.mp4",
-    "m4v": "ffmpeg -re -i %s -c copy -f flv rtmp://djwt.xyz:420/live/mp4:test.mp4",
-    "mkv": "ffmpeg -re -i %s -c copy -f flv rtmp://djwt.xyz:420/live/mp4:test.mp4",
-    "divx": "ffmpeg -re -i %s -c copy -f flv rtmp://djwt.xyz:420/live/mp4:test.mp4",
-    "avi": "ffmpeg -re -i %s -acodec libfaac -vcodec libx264 -b 130000 -f flv rtmp://djwt.xyz:420/live/mp4:test.mp4",
-    "divx": "ffmpeg -re -i %s -acodec libfaac -vcodec libx264 -f flv rtmp://djwt.xyz:420/live/mp4:test.mp4"
+    "mp4": "ffmpeg -re -i %s -c copy -f flv %s rtmp://djwt.xyz:420/live/mp4:test.mp4",
+    "rmvb": "ffmpeg -re -i %s -acodec libfaac -vcodec libx264 -f flv %s  rtmp://djwt.xyz:420/live/mp4:test.mp4",
+    "webm": "ffmpeg -re -i %s -acodec libfaac -vcodec libx264 -f flv %s  rtmp://djwt.xyz:420/live/mp4:test.mp4",
+    "m4v": "ffmpeg -re -i %s -c copy -f flv %s rtmp://djwt.xyz:420/live/mp4:test.mp4",
+    "mkv": "ffmpeg -re -i %s -c copy -f flv %s rtmp://djwt.xyz:420/live/mp4:test.mp4",
+    "avi": "ffmpeg -re -i %s -acodec libfaac -vcodec libx264 %s -f flv rtmp://djwt.xyz:420/live/mp4:test.mp4",
+    "divx": "ffmpeg -re -i %s -acodec libfaac -vcodec libx264 -f flv %s rtmp://djwt.xyz:420/live/mp4:test.mp4"
 }
