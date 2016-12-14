@@ -109,6 +109,17 @@ def authenticate(conn):
     except:
         return False
 
+
+def formattedList():
+    f = open('/home/david/Documents/tvSocket/paths.json', 'r')
+    key = json.loads(f.read())
+    outputString = ""
+    for i, value in key.items():
+        outputString = outputString + value['name'] + " - " + i + "\n"
+    ##key = f.read().strip()
+    return outputString
+
+
 #Invokes the approriate function upon recieving a valid json
 
 def parseData(data, conn):
@@ -137,10 +148,11 @@ def parseData(data, conn):
             return str(queueShow(json_data["tvShow"]))
 
         if json_data['command'] == 'idList':
-            f = open('/home/david/Documents/tvSocket/paths.json', 'r')
+            #f = open('/home/david/Documents/tvSocket/paths.json', 'r')
             ##key = json.loads(f.read())
-            key = f.read().strip()
-            return key
+            #key = f.read().strip()
+            return formattedList()
+            #return key
         
         if json_data['command'] == 'currentShow':
             global currentShowName
