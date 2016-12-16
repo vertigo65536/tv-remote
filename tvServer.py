@@ -10,12 +10,13 @@ import glob
 import hashlib
 from natsort import natsorted, ns
 
+
 def togglePause():
-    print "test"
+    print("test")
     pid = subprocess.Popen("ps -A -o pid,cmd|grep ffmpeg | grep -v grep |head -n 1 | awk '{print $1}'", shell=True, stdout=subprocess.PIPE).stdout.read().strip()
     cmd = "ps " + pid + " | grep " + pid + " | awk '{print $3}'"
     status = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE).stdout.read().strip()
-    print status
+    print(status)
     if status[0] == 'S':
         cmd = "kill -TSTP " + pid
     elif status[0] == 'T':
@@ -23,14 +24,66 @@ def togglePause():
     else:
         return "Unknown Status"
     try:
-        print cmd
+        print(cmd)
         subprocess.Popen(cmd, shell=True)
     except:
         return False
     else:
         return True
 
-#Retrieves a show path from a keyword
+
+def createPlaylist(name):
+    f = open('/home/david/Documents/tvSocket/playlists.json', 'r')
+    key = json.loads(f.read())
+    try:
+        key[name]
+    except NameError:
+        key[name] = {}
+        f.close()
+        f = open('/home/david/Documents/tvSocket/playlists.json', 'w+')
+        f.write(json.dumps(key))
+        f.close()
+        return True
+    else:
+        return "That Playlist Already Exists"
+
+
+def getPlaylistStringFromId(item):
+    playlistContent = getPlaylistData(item[1:])
+    playlistString = ""
+    for i in range(len(playlistContent)):
+        playlistString = playlistString + "|" + playlistContent[str(i)]
+    return playlistString[1:]
+
+
+def getPathCollection(id, field=False):    
+    splitIds = id.split('|')
+    if field != False:
+        returnString = ""
+        for i in splitIds:
+            if i[0] == '^':
+                returnString = returnString + getPathCollection(getPlaylistStringFromId(i), field)
+            else:
+                showData = getShowData(i.split(':')[0])
+                try:
+                    showData[field]
+                except:
+                    continue
+                else:
+                    returnString = returnString + showData[field] + ", "
+        return returnString.rstrip(', ')
+    paths = []
+    for item in splitIds:
+        if item[0] == '^':
+            playlistString = getPlaylistStringFromId(item)
+            paths.extend(getPathCollection(playlistString))
+        else:
+            path = queueEpisode(item)
+            paths.extend(glob.glob(path))
+    return paths
+
+
+# Retrieves a show path from a keyword
 
 def getShowData(name):
     f = open('/home/david/Documents/tvSocket/paths.json', 'r')
@@ -41,6 +94,18 @@ def getShowData(name):
         return False
     else:
         return key[name]
+
+
+def getPlaylistData(name):
+    f = open('/home/david/Documents/tvSocket/playlists.json', 'r')
+    key = json.loads(f.read())
+    try:
+        key[name]
+    except NameError:
+        return False
+    else:
+        return key[name]
+
 
 def getNameFromValue(path, searchType):
     f = open('/home/david/Documents/tvSocket/paths.json', 'r')
@@ -55,14 +120,15 @@ def getNameFromValue(path, searchType):
                 return value['name']
     return "Unknown Show"
 
-#Recieves a path, and adds it to the show queue
+
+# Receives a path, and adds it to the show queue
 
 def queueShow(path):
     global fileQueue
-    #open(fileQueue, "w+").close()
     try:
         f = open(fileQueue, "r")
     except:
+        print("could not read")
         return False
     if (len(f.read().rstrip(',').split(",")) > 5):
         return False
@@ -120,7 +186,7 @@ def formattedList():
     return outputString
 
 
-#Invokes the approriate function upon recieving a valid json
+# Invokes the approriate function upon recieving a valid json
 
 def parseData(data, conn):
     global shuffleToggle
@@ -131,8 +197,8 @@ def parseData(data, conn):
     except NameError:
         return False
     else:
-	if json_data['command'] == 'skip':
-            print skipLock
+        if json_data['command'] == 'skip':
+            print(skipLock)
             if skipLock == False:
                 print("skip!")
                 print(subprocess.call("killall ffmpeg", shell=True))
@@ -141,18 +207,15 @@ def parseData(data, conn):
                 return "Skiplock enabled. Contact your administrator to release it."
 
         if json_data['command'] == 'nextShow':
-            path = getShowData(json_data["tvShow"])
+            path = getPathCollection(json_data["tvShow"])
             if path != False:
-                print str(path["name"]) + " has been queued."
-            #return str(queueShow(path["path"]))
+                print(str(getPathCollection(json_data["tvShow"], "name")) + " has been queued.")
+            else:
+                print("something went wrong")  # tfw windows 10
             return str(queueShow(json_data["tvShow"]))
 
         if json_data['command'] == 'idList':
-            #f = open('/home/david/Documents/tvSocket/paths.json', 'r')
-            ##key = json.loads(f.read())
-            #key = f.read().strip()
             return formattedList()
-            #return key
         
         if json_data['command'] == 'currentShow':
             global currentShowName
@@ -204,35 +267,32 @@ def parseData(data, conn):
                     return True
                 else:
                     return False
-        if json_data['command'] == 'pickEpisode':
-            try:
-                json_data['tvShow']
-            except:
-                return False
-            else:
-                return queueEpisode(json_data['tvShow'])
- 
+        if json_data['command'] == 'createPlaylist':
+            return createPlaylist(json_data['tvShow'])
 
     return "invalid command"
+
 
 def queueEpisode(episodeKey):
     global run_event
     global currentShow
     episodeKey = episodeKey.split(":")
-    if len(episodeKey) not in [2,3]:
+    if (len(episodeKey) > 3) or (len(episodeKey) < 1):
         return "invalid syntax"
+    elif len(episodeKey) == 1:
+        return getShowData(episodeKey[0])['path']
     for i in range(2):
     	try:
-            int(episodeKey[i])
+            int(episodeKey[i+1])
         except:
             return "not numbers"
-        episodeKey[i] = int(episodeKey[i]) - 1
+        episodeKey[i+1] = int(episodeKey[i+1]) - 1
     try:
-        episodeKey[2]
+        episodeKey[0]
     except:
         show = currentShow
     else:
-        show = getShowData(episodeKey[2])['path']
+        show = getShowData(episodeKey[0])['path']
         if show == False:
             return show
     showSplit = show.split("/")
@@ -240,15 +300,15 @@ def queueEpisode(episodeKey):
     for i in range((len(showSplit) - 2)):
         if showSplit[i] != "":
             episodePath = episodePath + "/" + showSplit[i]
-    episodePath = nthFile(episodePath, "dir", episodeKey[0])
-    episodePath = nthFile(episodePath, show.split(".")[len(show.split(".")) - 1], episodeKey[1])
-    print episodePath
-    try:
-        queueShow(episodePath)
-    except:
-        return False
-    else:
-        return episodePath
+    episodePath = nthFile(episodePath, "dir", episodeKey[1])
+    episodePath = nthFile(episodePath, show.split(".")[len(show.split(".")) - 1], episodeKey[2])
+    print(episodePath)
+    #try:
+    #    queueShow(episodePath)
+    #except:
+    #    return False
+    #else:
+    return episodePath
 
 
 def nthFile(path, fileType, n):
@@ -264,10 +324,9 @@ def nthFile(path, fileType, n):
             subject = dirs
         else:
             subject = files
-        print subject
-        print natsorted(subject, alg=ns.IGNORECASE)
+        print(subject)
+        print(natsorted(subject, alg=ns.IGNORECASE))
         for f in natsorted(subject, key=lambda y: y.lower()):
-            print "test"
             filePath = os.path.join(subdir, f)
             if fileType == "dir":
                 if counter == n:
@@ -280,22 +339,22 @@ def nthFile(path, fileType, n):
     return False
     
 
-
 def connected(conn, BUFFER_SIZE):
     global run_event
     while run_event.is_set():
         try:
             data = conn.recv(BUFFER_SIZE)
             if not data: break
-            print "received data:", data
+            print("received data:", data)
             response = parseData(data, conn)
-            print data
+            print(data)
             conn.send(str(response).encode())
         except:
             break;
     conn.close()
 
-#Main connection thread. Calls the parseData function on success
+
+# Main connection thread. Calls the parseData function on success
 
 def connection():
     TCP_PORT = 5005
@@ -310,14 +369,14 @@ def connection():
     threads = []
     while run_event.is_set():
         conn, addr = s.accept()
-        print 'Connection address:', addr
+        print('Connection address:', addr)
         #connected(conn, BUFFER_SIZE)
         newthread = threading.Thread(target=connected, args=(conn, BUFFER_SIZE, ))
         newthread.start()
         threads.append(newthread)
 
 
-#Calls the approriate ffmpeg command for a given file
+# Calls the approriate ffmpeg command for a given file
 
 def ffmpeg(file, fileKey):
     fileType = file.split(".")
@@ -329,19 +388,17 @@ def ffmpeg(file, fileKey):
     except:
         params = ""
     try:
-        print key
-        print fileType
         key[fileType]
     except:
-        print "Invalid file type"
+        print("Invalid file type")
         return False
     else:
         command = key[fileType] % ("'" + file.replace("'", "'\\''") + "'", params)
-        print command
+        print(command)
         subprocess.call(command, shell=True)
 
 
-#Intitiate the stream, and check for queued show changes
+# Intitiate the stream, and check for queued show changes
 
 def player(path):
     global fileQueue
@@ -356,28 +413,27 @@ def player(path):
         f.write(path + ",")
         f.close()
     except:
-        print "could not open file"
+        print("could not open file")
         run_event.clear()
         return False;
     while run_event.is_set():
         showqueue = getNextShows()
-        checksum = hash(path)
         showqueue = showqueue.rstrip(',').split(",")
         if showqueue[0] == "":
             showqueue[0] = currentShow
         currentShow = showqueue[0]
-        currentShowPath = getShowData(currentShow)['path']
-        currentShowName = getShowData(currentShow)['name']
+        currentShowName = getPathCollection(currentShow, 'name')
+        currentShowPath = getPathCollection(currentShow)
         try:
             f = open('/var/www/html/currentShow.txt', 'w')
         except:
-            print "Website episode name not set"
+            print("Website episode name not set")
         else:
             f.write(currentShowName)
             f.close()
         
-        playlist = glob.glob(currentShowPath)
-        print playlist
+        playlist = currentShowPath
+        print(playlist)
         if shuffleToggle == True:
             shuffle(playlist)
         del(showqueue[0])
@@ -399,7 +455,7 @@ def player(path):
                 break
 
 
-#Returns an array of containing the queued shows
+# Returns an array of containing the queued shows
 
 def getNextShows():
     global fileQueue
@@ -413,7 +469,7 @@ def getNextShows():
     return path
 
 
-#Initiate threads, then wait for program termination.
+# Initiate threads, then wait for program termination.
 
 def main(path):
     global currentShowName
@@ -442,14 +498,16 @@ def main(path):
         while True:
             time.sleep(1)
     except KeyboardInterrupt:
-        print "attempting to close threads."
+        print("attempting to close threads.")
         run_event.clear()
         t1.join()
         t2.join()
-        print "threads successfully closed"
+        print("threads successfully closed")
 
 #global currentShow
 #currentShow = "/home/david/Videos/The Simpsons/Playlist/*/*.avi"
+#global fileQueue
+#fileQueue = "/var/filequeue.csv"
 #global run_event
 #run_event = threading.Event()
 #run_event.set()
@@ -457,7 +515,6 @@ def main(path):
 try:
     sys.argv[1]
 except:
-    #path = "/home/david/Videos/The Simpsons/Playlist/*/*.avi"
     path = 'simpsons'
 else:
     path = sys.argv[1]

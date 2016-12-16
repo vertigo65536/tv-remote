@@ -45,7 +45,7 @@
     },
     "kmkywap": {
         "name": "Knowing Me Knowing You with Alan Partridge",
-        "path": "/home/david/Videos/kmkywap/*.mp4"
+        "path": "/home/david/Videos/kmkywap/*/*.mp4"
     },
     "samuraichamp": {
         "name": "Samurai Champloo",
