@@ -301,7 +301,11 @@ def queueEpisode(episodeKey):
         if showSplit[i] != "":
             episodePath = episodePath + "/" + showSplit[i]
     episodePath = nthFile(episodePath, "dir", episodeKey[1])
-    episodePath = nthFile(episodePath, show.split(".")[len(show.split(".")) - 1], episodeKey[2])
+    if len(show.split(".")) > 1:
+        showExtension = show.split(".")[len(show.split(".")) - 1]
+    else:
+        showExtension = False
+    episodePath = nthFile(episodePath, showExtension, episodeKey[2])
     print(episodePath)
     #try:
     #    queueShow(episodePath)
@@ -332,7 +336,7 @@ def nthFile(path, fileType, n):
                 if counter == n:
                     return filePath
             else:
-                if filePath.split(".")[len(filePath.split(".")) - 1] == fileType:
+                if (filePath.split(".")[len(filePath.split(".")) - 1] == fileType) or (fileType == False):
                     if counter == n:
                        return filePath
             counter += 1
