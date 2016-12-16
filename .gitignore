@@ -1,3 +1,5 @@
 nohup.out
 .users.json
 *.swp
+.idea/
+playlistbk.json
