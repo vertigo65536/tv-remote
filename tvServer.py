@@ -193,6 +193,7 @@ def formattedList():
 def parseData(data, conn):
     global shuffleToggle
     global skipLock
+    global episodeChangeEvent
     json_data = json.loads(data)
     try:
         json_data['command']
@@ -204,7 +205,7 @@ def parseData(data, conn):
             if skipLock == False:
                 print("skip!")
                 print(subprocess.call("killall ffmpeg", shell=True))
-                time.sleep(5)
+                episodeChangeEvent.wait()
                 return currentEpisode
             else:
                 return "Skiplock enabled. Contact your administrator to release it."
@@ -414,7 +415,8 @@ def player(path):
     global shuffleToggle
     global currentShow
     global currentShowName
-
+    global episodeChangeEvent
+    
     try:
         f = open(fileQueue, "w")
         f.write(path + ",")
@@ -454,10 +456,12 @@ def player(path):
         f.close()
         for i in range(0, len(playlist)):
             currentEpisode = os.path.dirname(playlist[i]).split("/")
-            currentEpisode = currentEpisode[len(currentEpisode) - 1] + " - " + os.path.splitext(os.path.basename(playlist[i]))[0]    
+            currentEpisode = currentEpisode[len(currentEpisode) - 1] + " - " + os.path.splitext(os.path.basename(playlist[i]))[0]
+            episodeChangeEvent.set()
             ffmpeg(playlist[i], currentShow)
             path = getNextShows()
             newChecksum = hash(path)
+            episodeChangeEvent.clear()
             if not run_event.is_set() or (newChecksum != checksum) or (enqueued == True):
                 break
 
@@ -492,7 +496,9 @@ def main(path):
     fileQueue = "/var/filequeue.csv"
     global currentEpisode
     currentEpisode = "UNSET"
-
+    global episodeChangeEvent
+    episodeChangeEvent = threading.Event()
+    
     threads = []
     t1 = threading.Thread(target=player, args=(path,))
     threads.append(t1)
