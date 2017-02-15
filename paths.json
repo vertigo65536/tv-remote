@@ -25,7 +25,7 @@
     },
     "southpark": {
         "name": "South Park",
-        "path": "/home/david/Videos/South Park/*/*.mkv"
+        "path": "/home/david/Videos/South Park/South Park/*/*"
     },
     "tng": {
         "name": "Star Trek: The Next Generation",
@@ -220,5 +220,41 @@
     "dragonballgt": {
         "name": "Dragonball",
         "path": "/home/david/Videos/dragonball/Dragonball GT/*.rmvb"
+    },
+    "blackbooks": {
+        "name": "Black Books",
+        "path": "/home/david/Videos/Black Books/*/*.avi"
+    },
+    "alien": {
+        "name": "Alien Quadrilogy",
+        "path": "/home/david/Videos/Alien/*.avi"
+    },
+    "rickandmorty": {
+        "name": "Rick and Morty",
+        "path": "/mnt/hdd1/rickandmorty/*/*.mkv"
+    },
+    "thunderbirds": {
+        "name": "Thunderbirds",
+        "path": "/mnt/hdd1/thunderbirds/*/*.avi"
+    },
+    "seinfeld": {
+        "name": "Nothing",
+        "path": "/mnt/hdd1/seinfeld/*/*.mkv"
+    },
+    "mnie": {
+        "name": "My Name is Earl",
+        "path": "/mnt/hdd1/My Name Is Earl/*/*.avi"
+    },
+    "ghibli": {
+        "name": "Studio Ghibli Films",
+        "path": "/mnt/hdd1/ghibli/*.mkv"
+    },
+    "friends": {
+        "name": "Friends",
+        "path": "/mnt/hdd1/Friends/*/*.avi"
+    },
+    "bobross": {
+        "name": "Bob Ross: The Joy of Painting",
+        "path": "/mnt/hdd1/The Joy of Painting/*/*"
     }
 }

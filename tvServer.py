@@ -1,4 +1,5 @@
 import sys
+import time
 import subprocess
 from random import shuffle
 import socket
@@ -181,9 +182,10 @@ def formattedList():
     key = json.loads(f.read())
     outputString = ""
     for i, value in key.items():
-        outputString = outputString + value['name'] + " - " + i + "\n"
+        # outputString = outputString + value['name'] + " - " + i + "\n"
+        outputString = outputString + i + ", "
     ##key = f.read().strip()
-    return outputString
+    return outputString.rstrip(", ")
 
 
 # Invokes the approriate function upon recieving a valid json
@@ -202,7 +204,8 @@ def parseData(data, conn):
             if skipLock == False:
                 print("skip!")
                 print(subprocess.call("killall ffmpeg", shell=True))
-                return True
+                time.sleep(5)
+                return currentEpisode
             else:
                 return "Skiplock enabled. Contact your administrator to release it."
 
