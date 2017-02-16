@@ -458,10 +458,10 @@ def player(path):
             currentEpisode = os.path.dirname(playlist[i]).split("/")
             currentEpisode = currentEpisode[len(currentEpisode) - 1] + " - " + os.path.splitext(os.path.basename(playlist[i]))[0]
             episodeChangeEvent.set()
+            episodeChangeEvent.clear()
             ffmpeg(playlist[i], currentShow)
             path = getNextShows()
             newChecksum = hash(path)
-            episodeChangeEvent.clear()
             if not run_event.is_set() or (newChecksum != checksum) or (enqueued == True):
                 break
 
