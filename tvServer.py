@@ -234,6 +234,9 @@ def parseData(data, conn):
 
         if json_data['command'] == 'request':
             return requestVideo(json_data['tvShow'])
+        
+        if json_data['command'] == 'restart':
+            os._exit(0)
 
         if json_data['command'] == 'approve':
             if authenticate(conn) == True:
