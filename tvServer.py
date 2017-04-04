@@ -214,9 +214,10 @@ def parseData(data, conn):
             path = getPathCollection(json_data["tvShow"])
             if path != False:
                 print(str(getPathCollection(json_data["tvShow"], "name")) + " has been queued.")
+                return str(queueShow(json_data["tvShow"]))
             else:
                 print("something went wrong")  # tfw windows 10
-            return str(queueShow(json_data["tvShow"]))
+                return "No such show"
 
         if json_data['command'] == 'idList':
             return formattedList()
@@ -276,7 +277,7 @@ def parseData(data, conn):
         if json_data['command'] == 'createPlaylist':
             return createPlaylist(json_data['tvShow'])
 
-    return "invalid command"
+    return "Invalid command"
 
 
 def queueEpisode(episodeKey):
