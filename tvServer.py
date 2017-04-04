@@ -271,6 +271,8 @@ def parseData(data, conn):
                     return True
                 else:
                     return False
+        if json_data['command'] == 'restart':
+           subprocess.call("sudo systemctl restart tvserver", shell=True) 
         if json_data['command'] == 'createPlaylist':
             return createPlaylist(json_data['tvShow'])
 

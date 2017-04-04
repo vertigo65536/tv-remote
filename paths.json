@@ -31,6 +31,10 @@
         "name": "Star Trek: The Next Generation",
         "path": "/home/david/Videos/Star Trek/2 The Next Generation/*/*.avi"
     },
+    "ent": {
+        "name": "Star Trek: Enterprise",
+        "path": "/home/david/Videos/Star Trek/5 Enterprise/Season*/*.avi"
+    },
     "peewee": {
         "name": "Peewee's Big Adventure",
         "path": "/home/david/Videos/peewee.mp4"
@@ -256,5 +260,21 @@
     "bobross": {
         "name": "Bob Ross: The Joy of Painting",
         "path": "/mnt/hdd1/The Joy of Painting/*/*"
-    }
+    },
+    "bsg": {
+        "name": "Battlestar Galactica",
+        "path": "/mnt/hdd1/Battlestar Galactica/*/*.avi"
+    },
+    "mmpr": {
+        "name": "Mighty Morphin' Power Rangers",
+        "path": "/mnt/hdd1/Mighty Morphin Power Rangers/*/*.avi"
+    },
+    "themask": {
+        "name": "The Mask - The Animated Series",
+        "path": "/mnt/hdd1/The Mask The Animated Series/*/*.avi"
+   },
+   "buffy": {
+        "name": "Buffy the Vampire Slayer",
+        "path": "/mnt/hdd1/buffy/*/*.mkv"
+   }
 }
